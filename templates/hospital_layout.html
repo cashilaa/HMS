@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}HMS Hospital Layout{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>Hospital Layout</h2>
+    <div id="hospital-layout"></div>
+    <div class="layout-controls">
+        <button onclick="openModal('add-location-modal')">Add Location</button>
+        <button onclick="openModal('add-path-modal')">Add Path</button>
+    </div>
+</div>
+
+<div id="add-location-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('add-location-modal')">&times;</span>
+        <h2>Add Location</h2>
+        <form action="{{ url_for('add_location') }}" method="post">
+            <input type="text" name="location" placeholder="Location Name" required>
+            <input type="submit" value="Add Location">
+        </form>
+    </div>
+</div>
+
+<div id="add-path-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('add-path-modal')">&times;</span>
+        <h2>Add Path</h2>
+        <form action="{{ url_for('add_path') }}" method="post">
+            <select name="location1" required>
+                {% for location in layout %}
+                    <option value="{{ location }}">{{ location }}</option>
+                {% endfor %}
+            </select>
+            <select name="location2" required>
+                {% for location in layout %}
+                    <option value="{{ location }}">{{ location }}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" value="Add Path">
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+function openModal(modalId) {
+    document.getElementById(modalId).style.display = "block";
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = "none";
+}
+
+// Close modal when clicking outside of it
+window.onclick = function(event) {
+    if (event.target.className === "modal") {
+        event.target.style.display = "none";
+    }
+}
+
+// D3.js visualization
+const width = 600;
+const height = 400;
+
+const svg = d3.select("#hospital-layout")
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+const layout = {{ layout|tojson }};
+
+const simulation = d3.forceSimulation(layout.nodes)
+    .force("link", d3.forceLink(layout.links).id(d => d.id))
+    .force("charge", d3.forceManyBody())
+    .force("center", d3.forceCenter(width / 2, height / 2));
+
+const link = svg.append("g")
+    .selectAll("line")
+    .data(layout.links)
+    .join("line")
+    .attr("stroke", "#999")
+    .attr("stroke-opacity", 0.6);
+
+const node = svg.append("g")
+    .selectAll("circle")
+    .data(layout.nodes)
+    .join("circle")
+    .attr("r", 5)
+    .attr("fill", "#69b3a2");
+
+node.append("title")
+    .text(d => d.id);
+
+simulation.on("tick", () => {
+    link
+        .attr("x1", d => d.source.x)
+        .attr("y1", d => d.source.y)
+        .attr("x2", d => d.target.x)
+        .attr("y2", d => d.target.y);
+
+    node
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y);
+});
+
+function dragstarted(event) {
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    event.subject.fx = event.subject.x;
+    event.subject.fy = event.subject.y;
+}
+
+function dragged(event) {
+    event.subject.fx = event.x;
+    event.subject.fy = event.y;
+}

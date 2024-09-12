@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">Hospital Navigation</h1>
+
+<form action="{{ url_for('add_location') }}" method="post" class="mb-4">
+    <input type="text" name="location" placeholder="New Location" required class="px-2 py-1 border rounded">
+    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Add Location</button>
+</form>
+
+<form action="{{ url_for('add_path') }}" method="post" class="mb-4">
+    <input type="text" name="start" placeholder="Start Location" required class="px-2 py-1 border rounded">
+    <input type="text" name="end" placeholder="End Location" required class="px-2 py-1 border rounded">
+    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Add Path</button>
+</form>
+
+<form action="{{ url_for('find_path') }}" method="post" class="mb-4">
+    <input type="text" name="start" placeholder="Start Location" required class="px-2 py-1 border rounded">
+    <input type="text" name="end" placeholder="End Location" required class="px-2 py-1 border rounded">
+    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Find Path</button>
+</form>
+
+<div id="path-result" class="mb-4"></div>
+
+<h2 class="text-xl font-bold mb-2">Hospital Layout Visualization</h2>
+<img src="{{ url_for('visualize_hospital_layout') }}" alt="Hospital Layout" class="border">
+
+<script>
+document.querySelector('form[action="{{ url_for('find_path') }}"]').addEventListener('submit', function(e) {
+    e.preventDefault();
+    fetch(this.action, {
+        method: 'POST',
+        body: new FormData(this),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.path) {
+            document.getElementById('path-result').textContent = 'Path: ' + data.path.join(' → ');
+        } else {
+            document.getElementById('path-result').textContent = 'No path found';
+        }
+    });
+});
+</script>
+{% endblock %}

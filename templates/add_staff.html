@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">Add New Staff Member</h1>
+<form method="POST" class="space-y-4">
+    <div class="mb-3">
+        <label for="staff_id" class="block text-sm font-medium text-gray-700">Staff ID</label>
+        <input type="text" id="staff_id" name="staff_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+    </div>
+    <div class="mb-3">
+        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+        <input type="text" id="name" name="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+    </div>
+    <div class="mb-3">
+        <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+        <input type="text" id="role" name="role" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+    </div>
+    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Add Staff Member</button>
+</form>
+{% endblock %}

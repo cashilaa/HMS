@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">Add New Billing Record</h1>
+<form method="POST" class="space-y-4">
+    <div class="mb-3">
+        <label for="record_id" class="block text-sm font-medium text-gray-700">Record ID</label>
+        <input type="text" id="record_id" name="record_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+    </div>
+    <div class="mb-3">
+        <label for="patient_id" class="block text-sm font-medium text-gray-700">Patient ID</label>
+        <input type="text" id="patient_id" name="patient_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+    </div>
+    <div class="mb-3">
+        <label for="amount" class="block text-sm font-medium text-gray-700">Amount</label>
+        <input type="number" step="0.01" id="amount" name="amount" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+    </div>
+    <div class="mb-3">
+        <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+        <input type="date" id="date" name="date" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+    </div>
+    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Add Billing Record</button>
+</form>
+{% endblock %}

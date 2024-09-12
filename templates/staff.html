@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 id="staff" class="text-2xl font-bold mb-4">Staff</h1>
+
+<a href="{{ url_for('add_staff') }}" class="inline-block px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 mb-4">Add New Staff</a>
+
+<table class="w-full">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for staff_member in staff %}
+        <tr>
+            <td>{{ staff_member.id }}</td>
+            <td>{{ staff_member.name }}</td>
+            <td>{{ staff_member.role }}</td>
+            <td>
+                <form action="{{ url_for('update_staff', staff_id=staff_member.id) }}" method="POST" class="inline">
+                    <input type="text" name="name" value="{{ staff_member.name }}" required>
+                    <input type="text" name="role" value="{{ staff_member.role }}" required>
+                    <button type="submit" class="px-2 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600">Update</button>
+                </form>
+                <form action="{{ url_for('remove_staff', staff_id=staff_member.id) }}" method="POST" class="inline">
+                    <button type="submit" class="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600">Remove</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

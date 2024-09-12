@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">Healthcare Dashboard</h1>
+
+    <!-- Statistics Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <!-- Total Patients -->
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3"></div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Total Patients</dt>
+                            <dd class="text-lg font-medium text-gray-900">{{ total_patients }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's Appointments -->
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-green-500 rounded-md p-3"></div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Today's Appointments</dt>
+                            <dd class="text-lg font-medium text-gray-900">{{ todays_appointments }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Staff -->
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-yellow-500 rounded-md p-3"></div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Total Staff</dt>
+                            <dd class="text-lg font-medium text-gray-900">{{ total_staff }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Low Inventory Items -->
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-red-500 rounded-md p-3"></div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Inventory Items</dt>
+                            <dd class="text-lg font-medium text-gray-900">{{ low_inventory_items }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <!-- Recent Patients -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Recent Patients</h2>
+            {% for patient in recent_patients %}
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="flex-shrink-0">
+                        <span class="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100"></span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-900 truncate">{{ patient.name }}</p>
+                        <p class="text-sm text-gray-500 truncate">ID: {{ patient.id }}</p>
+                    </div>
+                    <div>
+                        <a href="{{ url_for('patient_details', patient_id=patient.id) }}" class="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50">View</a>
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="mt-4 flex flex-wrap gap-4">
+                <a href="{{ url_for('sorted_patients') }}" class="text-blue-600 hover:underline">View Sorted Patients</a>
+                <a href="{{ url_for('search_patient') }}" class="text-blue-600 hover:underline">Search Patients</a>
+            </div>
+        </div>
+
+        <!-- Upcoming Appointments -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Upcoming Appointments</h2>
+            {% for appointment in upcoming_appointments %}
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="flex-shrink-0">
+                        <span class="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100"></span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-900 truncate">{{ appointment.patient_name }}</p>
+                        <p class="text-sm text-gray-500 truncate">{{ appointment.time.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                    </div>
+                    <div>
+                        <a href="#" class="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50">Details</a>
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="mt-4">
+                <a href="{{ url_for('schedule_appointment') }}" class="text-blue-600 hover:underline">Schedule New Appointment</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Information -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <!-- Staff Overview -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Staff Overview</h2>
+            <div class="space-y-4">
+                {% for staff in staff_members %}
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-gray-200 rounded-full mr-3"></div>
+                            <div class="text-sm">
+                                <p class="font-medium">{{ staff.name }}</p>
+                                <p class="text-gray-500">{{ staff.role }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="mt-4">
+                <a href="{{ url_for('staff') }}" class="text-blue-600 hover:underline">Add New Staff Member</a>
+            </div>
+        </div>
+
+        <!-- Inventory Status -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Inventory Status</h2>
+            <div class="space-y-4">
+                {% for item in inventory_items %}
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="font-medium">{{ item.name }}</p>
+                            <p class="text-sm text-gray-500">Quantity: {{ item.quantity }}</p>
+                        </div>
+                        {% if item.quantity < item.threshold %}
+                            <div class="text-red-600 font-semibold">Low Stock</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="mt-4">
+                <a href="{{ url_for('inventory') }}" class="text-blue-600 hover:underline">Manage Inventory</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Appointment Trends Chart -->
+    <div class="bg-white shadow rounded-lg p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Appointment Trends</h2>
+        <div class="h-64">
+            <canvas id="appointmentsChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
+        <div class="grid grid-cols-2 gap-4">
+            <a href="{{ url_for('schedule_appointment') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded text-center">Schedule Appointment</a>
+            <a href="{{ url_for('add_patient') }}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded text-center">Add Patient</a>
+            <a href="{{ url_for('staff') }}" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded text-center">Manage Staff</a>
+            <a href="{{ url_for('add_billing') }}" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded text-center">View Billing</a>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('appointmentsChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Appointments',
+                data: [65, 59, 80, 81, 56, 55],
+                borderColor: 'rgb(59, 130, 246)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+});
+</script>
+
+{% endblock %}
